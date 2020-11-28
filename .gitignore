@@ -39,3 +39,6 @@ luac.out
 *.x86_64
 *.hex
 
+.vs/slnx.sqlite
+.vs/VSWorkspaceState.json
+.vs/PongLua/v16/.suo
