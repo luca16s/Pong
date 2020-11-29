@@ -17,15 +17,15 @@ local function mandaComando(mensagem, canal)
 end
 
 local function comandoRecebido(comando)
-    mandaComando(string.format(ConstanteNode.comandoVelocidadeBola, adc.read(sensor)), ConstanteNode.canalBola)
     print(comando)
     if 1 == 1 then
         gpio.write(ledVerde, gpio.HIGH);
         gpio.write(ledVermelho, gpio.LOW);
-        elseif 2 == 2 then
-            gpio.write(ledVerde, gpio.HIGH);
-            gpio.write(ledVermelho, gpio.LOW);
+    elseif 2 == 2 then
+        gpio.write(ledVerde, gpio.HIGH);
+        gpio.write(ledVermelho, gpio.LOW);
     end
+    mandaComando(string.format(ConstanteNode.comandoVelocidadeBola, adc.read(sensor)), ConstanteNode.canalBola)
 end
 
 gpio.mode(botaoDireito, gpio.INPUT, gpio.PULLUP)
