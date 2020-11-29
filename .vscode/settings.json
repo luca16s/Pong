@@ -1,5 +1,14 @@
 {
     "Lua.diagnostics.globals": [
-        "gpio"
+        "gpio",
+        "mqtt",
+        "Socket",
+        "socket",
+        "Timer",
+        "System",
+        "adc"
+    ],
+    "Lua.diagnostics.disable": [
+        "redefined-local"
     ]
 }
