@@ -6,7 +6,8 @@
         "socket",
         "Timer",
         "System",
-        "adc"
+        "adc",
+        "love"
     ],
     "Lua.diagnostics.disable": [
         "redefined-local"

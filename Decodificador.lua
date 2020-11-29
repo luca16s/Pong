@@ -1,0 +1,3 @@
+Decodificador = {}
+
+return Decodificador
