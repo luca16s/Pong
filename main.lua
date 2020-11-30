@@ -4,11 +4,15 @@ local comprimento, largura = love.graphics.getDimensions()
 local audioBola
 local bola = {
     raio = ConstanteLove.raioBola,
-    velocidade = 200,
     posicao = {
         X = (comprimento / 2) - (ConstanteLove.raioBola / 2),
         Y = (largura / 2) - (ConstanteLove.raioBola / 2)
-    }
+    },
+    velocidade = {
+        base = 200,
+        X = 0,
+        Y = 0
+    },
 }
 
 local function construirJanela()
@@ -22,20 +26,20 @@ local function definirPosicaoCentralJogadores(tamanhoRaquete)
 end
 
 local function movimentaBola(velocidade, bola)
-    bola.posicao.X = bola.posicao.X + bola.vx*velocidade
-    bola.posicao.Y = bola.posicao.Y + bola.vy*velocidade
+    bola.posicao.X = bola.posicao.X + bola.velocidade.x*velocidade
+    bola.posicao.Y = bola.posicao.Y + bola.velocidade.y*velocidade
     if bola.posicao.X < bola.raio then
-      bola.vx = math.abs(bola.vx)
+      bola.velocidade.x = math.abs(bola.velocidade.x)
       audioBola:stop() audioBola:play()
     elseif bola.posicao.X > comprimento-bola.raio then
-      bola.vx = -math.abs(bola.vx)
+      bola.velocidade.x = -math.abs(bola.velocidade.x)
       audioBola:stop() audioBola:play()
     end
     if bola.posicao.Y < bola.raio then
-      bola.vy = math.abs(bola.vy)
+      bola.velocidade.y = math.abs(bola.velocidade.y)
       audioBola:stop() audioBola:play()
     elseif bola.posicao.Y > largura-bola.raio then
-      bola.vy = -math.abs(bola.vy)
+      bola.velocidade.y = -math.abs(bola.velocidade.y)
       audioBola:stop() audioBola:play()
     end
 end
@@ -43,8 +47,8 @@ end
 function love.load()
     construirJanela()
     audioBola = love.audio.newSource(ConstanteLove.somBola, "static")
-    bola.vx = bola.velocidade * math.cos(math.random() * 2 * math.pi)
-    bola.vy = bola.velocidade * math.sin(math.random() * 2 * math.pi)
+    bola.velocidade.x = bola.velocidade.base * math.cos(math.random() * 2 * math.pi)
+    bola.velocidade.y = bola.velocidade.base * math.sin(math.random() * 2 * math.pi)
 end
 
 function love.update(dt)
