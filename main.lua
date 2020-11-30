@@ -8,7 +8,6 @@ local bola = {
         Y = (largura / 2) - (ConstanteLove.raioBola / 2),
     },
     velocidade = {
-        base = 200,
         X = 200 * math.cos(math.random() * 2 * math.pi),
         Y = 200 * math.sin(math.random() * 2 * math.pi),
     },
