@@ -1,5 +1,13 @@
 local ConstanteLove = require 'ConstanteLove'
-local DecodificadorComando = require 'Decodificador'
+
+local comprimento, largura = love.graphics.getDimensions()
+local bola = {
+    raio = ConstanteLove.raioBola,
+    posicaoInicial = {
+        X = (comprimento / 2) - (ConstanteLove.raioBola / 2),
+        Y = (largura / 2) - (ConstanteLove.raioBola / 2)
+    }
+}
 
 local function construirJanela()
     love.window.setFullscreen(false)
@@ -8,13 +16,7 @@ local function construirJanela()
 end
 
 local function definirPosicaoCentralJogadores(tamanhoRaquete)
-    local comprimento, largura = love.graphics.getDimensions()
     return (comprimento / 2) - (tamanhoRaquete / 2), largura
-end
-
-local function definirPosicaoCentralBola(tamanhoBola)
-    local comprimento, largura = love.graphics.getDimensions()
-    return (comprimento / 2) - (tamanhoBola / 2), (largura / 2) - (tamanhoBola / 2)
 end
 
 function love.load()
@@ -30,6 +32,5 @@ function love.draw()
   love.graphics.rectangle("fill", posicaoHorizontal, 10, ConstanteLove.comprimentoJogador, ConstanteLove.alturaJogador)
   love.graphics.rectangle("fill", posicaoHorizontal, posicaoVertical - 10, ConstanteLove.comprimentoJogador, ConstanteLove.alturaJogador)
 
-  local posicaoBolaX, posicaoBolaY = definirPosicaoCentralBola(ConstanteLove.tamanhoBola)
-  love.graphics.circle("fill", posicaoBolaX, posicaoBolaY, ConstanteLove.tamanhoBola)
+  love.graphics.circle("fill", bola.posicaoInicial.X, bola.posicaoInicial.Y, bola.raio)
 end

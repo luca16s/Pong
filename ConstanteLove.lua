@@ -7,7 +7,7 @@ ConstanteLove.canalBola = 'PONG_LUA_BOLA'
 ConstanteLove.comandoPontoObtido = '<PONG>-<LIGHT>-<GREEN>'
 ConstanteLove.comandoPontoLevado = '<PONG>-<LIGHT>-<RED>'
 ConstanteLove.nomeFonte = 'game.ttf'
-ConstanteLove.tamanhoBola = 5
+ConstanteLove.raioBola = 5
 ConstanteLove.comprimentoJogador = 120
 ConstanteLove.alturaJogador = 5
 return ConstanteLove
