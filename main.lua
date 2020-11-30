@@ -42,7 +42,7 @@ end
 
 function love.load()
     construirJanela()
-    audioBola = love.audio.newSource("ball.mp3","static")
+    audioBola = love.audio.newSource(ConstanteLove.somBola, "static")
     bola.vx = bola.velocidade * math.cos(math.random() * 2 * math.pi)
     bola.vy = bola.velocidade * math.sin(math.random() * 2 * math.pi)
 end

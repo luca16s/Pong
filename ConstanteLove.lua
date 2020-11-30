@@ -2,6 +2,7 @@ ConstanteLove = {}
 ConstanteLove.hostServer = 'localhost'
 ConstanteLove.TituloJogo = 'Pong'
 ConstanteLove.IconeJogo = 'pong.png'
+ConstanteLove.somBola = "ball.mp3"
 ConstanteLove.canal = 'PONG_LUA_GAME'
 ConstanteLove.canalBola = 'PONG_LUA_BOLA'
 ConstanteLove.comandoPontoObtido = '<PONG>-<LIGHT>-<GREEN>'
