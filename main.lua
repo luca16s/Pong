@@ -56,8 +56,8 @@ end
 function love.draw()
   local posicaoHorizontal, posicaoVertical = definirPosicaoCentralJogadores(ConstanteLove.comprimentoJogador)
 
-  love.graphics.rectangle("fill", posicaoHorizontal, 5, ConstanteLove.comprimentoJogador, ConstanteLove.alturaJogador)
-  love.graphics.rectangle("fill", posicaoHorizontal, posicaoVertical - 10, ConstanteLove.comprimentoJogador, ConstanteLove.alturaJogador)
+  love.graphics.rectangle("fill", posicaoHorizontal, 50, ConstanteLove.comprimentoJogador, ConstanteLove.alturaJogador)
+  love.graphics.rectangle("fill", posicaoHorizontal, posicaoVertical - 55, ConstanteLove.comprimentoJogador, ConstanteLove.alturaJogador)
 
   love.graphics.circle("fill", bola.posicao.X, bola.posicao.Y, bola.raio)
 end
