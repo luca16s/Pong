@@ -3,7 +3,7 @@ local ConstanteLove = require 'ConstanteLove'
 local comprimento, largura = love.graphics.getDimensions()
 local bola = {
     raio = ConstanteLove.raioBola,
-    posicaoInicial = {
+    posicao = {
         X = (comprimento / 2) - (ConstanteLove.raioBola / 2),
         Y = (largura / 2) - (ConstanteLove.raioBola / 2)
     }
@@ -29,8 +29,8 @@ end
 function love.draw()
   local posicaoHorizontal, posicaoVertical = definirPosicaoCentralJogadores(ConstanteLove.comprimentoJogador)
 
-  love.graphics.rectangle("fill", posicaoHorizontal, 10, ConstanteLove.comprimentoJogador, ConstanteLove.alturaJogador)
+  love.graphics.rectangle("fill", posicaoHorizontal, 5, ConstanteLove.comprimentoJogador, ConstanteLove.alturaJogador)
   love.graphics.rectangle("fill", posicaoHorizontal, posicaoVertical - 10, ConstanteLove.comprimentoJogador, ConstanteLove.alturaJogador)
 
-  love.graphics.circle("fill", bola.posicaoInicial.X, bola.posicaoInicial.Y, bola.raio)
+  love.graphics.circle("fill", bola.posicao.X, bola.posicao.Y, bola.raio)
 end
