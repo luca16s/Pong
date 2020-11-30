@@ -1,6 +1,7 @@
 local ConstanteLove = require 'ConstanteLove'
 
 local comprimento, largura = love.graphics.getDimensions()
+local audioBola
 local bola = {
     raio = ConstanteLove.raioBola,
     velocidade = 200,
@@ -25,18 +26,23 @@ local function movimentaBola(velocidade, bola)
     bola.posicao.Y = bola.posicao.Y + bola.vy*velocidade
     if bola.posicao.X < bola.raio then
       bola.vx = math.abs(bola.vx)
+      audioBola:stop() audioBola:play()
     elseif bola.posicao.X > comprimento-bola.raio then
       bola.vx = -math.abs(bola.vx)
+      audioBola:stop() audioBola:play()
     end
     if bola.posicao.Y < bola.raio then
       bola.vy = math.abs(bola.vy)
+      audioBola:stop() audioBola:play()
     elseif bola.posicao.Y > largura-bola.raio then
       bola.vy = -math.abs(bola.vy)
+      audioBola:stop() audioBola:play()
     end
 end
 
 function love.load()
     construirJanela()
+    audioBola = love.audio.newSource("ball.mp3","static")
     bola.vx = bola.velocidade * math.cos(math.random() * 2 * math.pi)
     bola.vy = bola.velocidade * math.sin(math.random() * 2 * math.pi)
 end
