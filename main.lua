@@ -3,6 +3,7 @@ local ConstanteLove = require 'ConstanteLove'
 local comprimento, largura = love.graphics.getDimensions()
 local bola = {
     raio = ConstanteLove.raioBola,
+    velocidade = 200,
     posicao = {
         X = (comprimento / 2) - (ConstanteLove.raioBola / 2),
         Y = (largura / 2) - (ConstanteLove.raioBola / 2)
@@ -19,11 +20,29 @@ local function definirPosicaoCentralJogadores(tamanhoRaquete)
     return (comprimento / 2) - (tamanhoRaquete / 2), largura
 end
 
-function love.load()
-    construirJanela()
+local function movimentaBola(velocidade, bola)
+    bola.posicao.X = bola.posicao.X + bola.vx*velocidade
+    bola.posicao.Y = bola.posicao.Y + bola.vy*velocidade
+    if bola.posicao.X < bola.raio then
+      bola.vx = math.abs(bola.vx)
+    elseif bola.posicao.X > comprimento-bola.raio then
+      bola.vx = -math.abs(bola.vx)
+    end
+    if bola.posicao.Y < bola.raio then
+      bola.vy = math.abs(bola.vy)
+    elseif bola.posicao.Y > largura-bola.raio then
+      bola.vy = -math.abs(bola.vy)
+    end
 end
 
-function love.update()
+function love.load()
+    construirJanela()
+    bola.vx = bola.velocidade * math.cos(math.random() * 2 * math.pi)
+    bola.vy = bola.velocidade * math.sin(math.random() * 2 * math.pi)
+end
+
+function love.update(dt)
+    movimentaBola(dt, bola)
 end
 
 function love.draw()
