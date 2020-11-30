@@ -4,5 +4,6 @@ ConstanteNode.canalJogo = 'PONG_LUA_GAME'
 ConstanteNode.canalBola = 'PONG_LUA_BOLA'
 ConstanteNode.comandoMoverEsquerda = '<PONG><MOVE><LEFT>'
 ConstanteNode.comandoMoverDireita = '<PONG><MOVE><RIGHT>'
+ConstanteNode.comandoParar = '<PONG><STOP>'
 ConstanteNode.comandoVelocidadeBola = '<PONG><%f>'
 return ConstanteNode

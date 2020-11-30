@@ -3,6 +3,7 @@ local ConstanteLove = require 'ConstanteLove'
 math.randomseed(os.time())
 
 local comprimento, largura = love.graphics.getDimensions()
+
 local bola = {
     raio = ConstanteLove.raioBola,
     posicao = {

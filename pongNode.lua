@@ -9,8 +9,8 @@ local botaoEsquerdo = 2
 
 gpio.mode(ledVerde, gpio.OUTPUT)
 gpio.mode(ledVermelho, gpio.OUTPUT)
-gpio.write(ledVerde, gpio.LOW);
-gpio.write(ledVermelho, gpio.LOW);
+gpio.write(ledVerde, gpio.LOW)
+gpio.write(ledVermelho, gpio.LOW)
 
 local function mandaComando(mensagem, canal)
     mqtt.sendMessage(mensagem, canal)
@@ -19,11 +19,11 @@ end
 local function comandoRecebido(comando)
     print(comando)
     if 1 == 1 then
-        gpio.write(ledVerde, gpio.HIGH);
-        gpio.write(ledVermelho, gpio.LOW);
+        gpio.write(ledVerde, gpio.HIGH)
+        gpio.write(ledVermelho, gpio.LOW)
     elseif 2 == 2 then
-        gpio.write(ledVerde, gpio.HIGH);
-        gpio.write(ledVermelho, gpio.LOW);
+        gpio.write(ledVerde, gpio.HIGH)
+        gpio.write(ledVermelho, gpio.LOW)
     end
     mandaComando(string.format(ConstanteNode.comandoVelocidadeBola, adc.read(sensor)), ConstanteNode.canalBola)
 end
