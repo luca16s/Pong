@@ -55,4 +55,4 @@ gpio.mode(botaoEsquerdo, gpio.INPUT, gpio.PULLUP)
 gpio.trig(botaoDireito, 'both', mandaMensagemDireita)
 gpio.trig(botaoEsquerdo, 'both', mandaMensagemEsquerda)
 
-mqtt.start(ConstanteNode.hostServer, 'Paulo',ConstanteNode.canalJogo, comandoRecebido)
+mqtt.start(ConstanteNode.hostServer, 'Paulo', ConstanteNode.canalJogo, comandoRecebido)
