@@ -2,16 +2,16 @@ local mqtt = require 'mqttNodeMCULibrary'
 local ConstanteNode = require 'ConstanteNode'
 
 local sensor = 0
-local ledVerde = 6
-local ledVermelho = 3
+local ledJogador1 = 6
+local ledJogador2 = 3
 local botaoDireito = 1
 local botaoEsquerdo = 2
 local ultimaAcao = nil
 
-gpio.mode(ledVerde, gpio.OUTPUT)
-gpio.mode(ledVermelho, gpio.OUTPUT)
-gpio.write(ledVerde, gpio.LOW)
-gpio.write(ledVermelho, gpio.LOW)
+gpio.mode(ledJogador1, gpio.OUTPUT)
+gpio.mode(ledJogador2, gpio.OUTPUT)
+gpio.write(ledJogador1, gpio.LOW)
+gpio.write(ledJogador2, gpio.LOW)
 
 local function mensagemVelocidadeBola(mensagem, canal)
     mqtt.sendMessage(mensagem, canal)
@@ -41,11 +41,11 @@ local function mandaMensagemDireita(level)
 
 local function comandoRecebido(comando)
     if comando == ConstanteNode.Jogador1 then
-        gpio.write(ledVerde, gpio.HIGH)
-        gpio.write(ledVermelho, gpio.LOW)
+        gpio.write(ledJogador2, gpio.LOW)
+        gpio.write(ledJogador1, gpio.HIGH)
     elseif comando == ConstanteNode.Jogador2 then
-        gpio.write(ledVerde, gpio.HIGH)
-        gpio.write(ledVermelho, gpio.LOW)
+        gpio.write(ledJogador2, gpio.LOW)
+        gpio.write(ledJogador1, gpio.HIGH)
     end
     mensagemVelocidadeBola(string.format(ConstanteNode.comandoVelocidadeBola, adc.read(sensor)), ConstanteNode.canalBola)
 end
