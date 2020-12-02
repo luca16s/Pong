@@ -6,4 +6,6 @@ ConstanteNode.comandoMoverEsquerda = '<PONG><MOVE><LEFT>'
 ConstanteNode.comandoMoverDireita = '<PONG><MOVE><RIGHT>'
 ConstanteNode.comandoParar = '<PONG><STOP>'
 ConstanteNode.comandoVelocidadeBola = '<PONG><%f>'
+ConstanteNode.Jogador1 = '<JOGADOR_1>'
+ConstanteNode.Jogador2 = '<JOGADOR_2>'
 return ConstanteNode
