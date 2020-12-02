@@ -10,8 +10,6 @@ local ultimaAcao = nil
 
 gpio.mode(ledJogador1, gpio.OUTPUT)
 gpio.mode(ledJogador2, gpio.OUTPUT)
-gpio.write(ledJogador1, gpio.LOW)
-gpio.write(ledJogador2, gpio.LOW)
 
 local function mensagemVelocidadeBola(mensagem, canal)
     mqtt.sendMessage(mensagem, canal)
@@ -40,10 +38,10 @@ local function mandaMensagemDireita(level)
   end
 
 local function comandoRecebido(comando)
-    if comando == ConstanteNode.Jogador1 then
+    if comando == ConstanteNode.comandoPontoJogador1 then
         gpio.write(ledJogador2, gpio.LOW)
         gpio.write(ledJogador1, gpio.HIGH)
-    elseif comando == ConstanteNode.Jogador2 then
+    elseif comando == ConstanteNode.comandoPontoJogador2 then
         gpio.write(ledJogador2, gpio.LOW)
         gpio.write(ledJogador1, gpio.HIGH)
     end
@@ -55,4 +53,4 @@ gpio.mode(botaoEsquerdo, gpio.INPUT, gpio.PULLUP)
 gpio.trig(botaoDireito, 'both', mandaMensagemDireita)
 gpio.trig(botaoEsquerdo, 'both', mandaMensagemEsquerda)
 
-mqtt.start(ConstanteNode.hostServer, ConstanteNode.canalJogo, comandoRecebido)
+mqtt.start(ConstanteNode.hostServer, 'Paulo',ConstanteNode.canalJogo, comandoRecebido)
