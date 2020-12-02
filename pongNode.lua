@@ -38,14 +38,16 @@ local function mandaMensagemDireita(level)
   end
 
 local function comandoRecebido(comando)
+  if comando == ConstanteNode.comandoMoverEsquerda or comando == ConstanteNode.comandoMoverDireita then
     if comando == ConstanteNode.comandoPontoJogador1 then
-        gpio.write(ledJogador2, gpio.LOW)
-        gpio.write(ledJogador1, gpio.HIGH)
+      gpio.write(ledJogador2, gpio.LOW)
+      gpio.write(ledJogador1, gpio.HIGH)
     elseif comando == ConstanteNode.comandoPontoJogador2 then
-        gpio.write(ledJogador2, gpio.LOW)
-        gpio.write(ledJogador1, gpio.HIGH)
+      gpio.write(ledJogador2, gpio.LOW)
+      gpio.write(ledJogador1, gpio.HIGH)
     end
     mensagemVelocidadeBola(string.format(ConstanteNode.comandoVelocidadeBola, adc.read(sensor)), ConstanteNode.canalBola)
+  end
 end
 
 gpio.mode(botaoDireito, gpio.INPUT, gpio.PULLUP)
