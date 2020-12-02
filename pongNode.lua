@@ -6,15 +6,34 @@ local ledVerde = 6
 local ledVermelho = 3
 local botaoDireito = 1
 local botaoEsquerdo = 2
+local ultimaAcao = nil
 
 gpio.mode(ledVerde, gpio.OUTPUT)
 gpio.mode(ledVermelho, gpio.OUTPUT)
 gpio.write(ledVerde, gpio.LOW)
 gpio.write(ledVermelho, gpio.LOW)
 
-local function mandaComando(mensagem, canal)
-    mqtt.sendMessage(mensagem, canal)
-end
+local function mandaMensagemDireita(level)
+    if level ~= ultimaAcao then
+      ultimaAcao = level
+      if level == 0 then
+        mqtt.sendMessage(ConstanteNode.comandoMoverDireita, ConstanteNode.canalJogo)
+      elseif level == 1 then
+        mqtt.sendMessage(ConstanteNode.comandoParar, ConstanteNode.canalJogo)
+      end
+    end
+  end
+  
+  local function mandaMensagemEsquerda(level)
+    if level ~= ultimaAcao then
+      ultimaAcao = level
+      if level == 0 then
+        mqtt.sendMessage(ConstanteNode.comandoMoverEsquerda, ConstanteNode.canalJogo)
+      elseif level == 1 then
+        mqtt.sendMessage(ConstanteNode.comandoParar, ConstanteNode.canalJogo)
+      end
+    end
+  end
 
 local function comandoRecebido(comando)
     print(comando)
@@ -25,12 +44,12 @@ local function comandoRecebido(comando)
         gpio.write(ledVerde, gpio.HIGH)
         gpio.write(ledVermelho, gpio.LOW)
     end
-    mandaComando(string.format(ConstanteNode.comandoVelocidadeBola, adc.read(sensor)), ConstanteNode.canalBola)
+    --mandaComando(string.format(ConstanteNode.comandoVelocidadeBola, adc.read(sensor)), ConstanteNode.canalBola)
 end
 
 gpio.mode(botaoDireito, gpio.INPUT, gpio.PULLUP)
 gpio.mode(botaoEsquerdo, gpio.INPUT, gpio.PULLUP)
-gpio.trig(botaoDireito, 'both', mandaComando(ConstanteNode.comandoMoverDireita, ConstanteNode.canalJogo))
-gpio.trig(botaoEsquerdo, 'both', mandaComando(ConstanteNode.comandoMoverEsquerda, ConstanteNode.canalJogo))
+gpio.trig(botaoDireito, 'both', mandaMensagemDireita)
+gpio.trig(botaoEsquerdo, 'both', mandaMensagemEsquerda)
 
 mqtt.start(ConstanteNode.hostServer, ConstanteNode.canalJogo, comandoRecebido)
