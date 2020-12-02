@@ -1,20 +1,20 @@
 local mqtt = require 'mqttNodeMCULibrary'
 
 local sensor = 0
+local ultimaAcao = nil
 local ledJogador1 = 6
 local ledJogador2 = 3
 local botaoDireito = 1
 local botaoEsquerdo = 2
-local ultimaAcao = nil
 
-local hostServer = '192.168.1.2'
 local canalJogo = 'PONG_LUA_GAME'
-local comandoMoverEsquerda = '<PONG><MOVE><LEFT>'
-local comandoMoverDireita = '<PONG><MOVE><RIGHT>'
+local hostServer = '192.168.1.2'
 local comandoParar = '<PONG><STOP>'
-local comandoVelocidadeBola = '<PONG><%f>'
+local comandoMoverDireita = '<PONG><MOVE><RIGHT>'
+local comandoMoverEsquerda = '<PONG><MOVE><LEFT>'
 local comandoPontoJogador1 = '<PONG><LIGHT><GREEN>'
 local comandoPontoJogador2 = '<PONG><LIGHT><RED>'
+local comandoVelocidadeBola = '<PONG><%f>'
 
 gpio.mode(ledJogador1, gpio.OUTPUT)
 gpio.mode(ledJogador2, gpio.OUTPUT)
