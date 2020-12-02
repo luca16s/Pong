@@ -58,25 +58,26 @@ local function movimentaBola(velocidade, bola)
       bola.velocidade.Y = -math.abs(bola.velocidade.Y)
       bola.audio:stop() bola.audio:play()
     end
-    if bola.posicao.X > jogador1.x and jogador1.x+jogador1.largura>bola.posicao.X and jogador1.y+jogador1.altura> bola.posicao.Y then
+
+    if bola.posicao.X > jogador1.x and jogador1.x + jogador1.largura > bola.posicao.X and jogador1.y + jogador1.altura > bola.posicao.Y then
       bola.velocidade.Y = math.abs(bola.velocidade.Y)
       bola.audio:stop() bola.audio:play()
-    elseif bola.posicao.X > jogador2.x and jogador2.x+jogador2.largura>bola.posicao.X and bola.posicao.Y>jogador2.y+jogador2.altura then --- MODIFICAR 
+    elseif bola.posicao.X > jogador2.x and jogador2.x + jogador2.largura > bola.posicao.X and bola.posicao.Y>jogador2.y + jogador2.altura then --- MODIFICAR
       bola.velocidade.Y = math.abs(bola.velocidade.Y)
       bola.audio:stop() bola.audio:play()
   end
 end
 
-local function movimentaP1(dt)
+local function movimentaJogador1(dt)
   if love.keyboard.isDown("right") then
-      jogador1.x=jogador1.x + 200*dt
+      jogador1.x = jogador1.x + 200*dt
     elseif love.keyboard.isDown("left") then
-      jogador1.x=jogador1.x - 200*dt
+      jogador1.x = jogador1.x - 200*dt
     end
-    if jogador1.x+jogador1.largura>comprimento then
-      jogador1.x=jogador1.x-5
-    elseif 0>jogador1.x then
-      jogador1.x=jogador1.x+5
+    if jogador1.x + jogador1.largura > comprimento then
+      jogador1.x = jogador1.x - 5
+    elseif 0 > jogador1.x then
+      jogador1.x = jogador1.x + 5
     end
 end
 
@@ -85,7 +86,7 @@ function love.load()
 end
 
 function love.update(dt)
-  movimentaP1(dt)
+  movimentaJogador1(dt)
     movimentaBola(dt, bola)
 end
 
