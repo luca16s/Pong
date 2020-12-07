@@ -1,5 +1,6 @@
 ---------------------------------------------
 local ConstanteLove = require 'ConstanteLove'
+local mqttLove = require 'mqttLoveLibrary'
 local comprimento, largura = love.graphics.getDimensions()
 local ParaJogo=true
 local FinalPartida=false
@@ -126,8 +127,8 @@ function restart()
   end
 end
 function love.load()
-  fonte=love.graphics.newFont(ConstanteLove.nomeFonte,24)
-  mqttLove.start(ConstanteLove.hostServer, "luca16s", ConstanteLove.canal, trataMensagemRecebida)
+  fonte=love.graphics.newFont(ConstanteLove.nomeFonte, 24)
+  --mqttLove.start(ConstanteLove.hostServer, "luca16s", ConstanteLove.canal, trataMensagemRecebida)
   construirJanela()
 end
 function love.update(dt)
