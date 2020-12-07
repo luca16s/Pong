@@ -50,11 +50,9 @@ local function mandaMensagemDireita(level)
 local function comandoRecebido(comando)
   if comando == comandoPontoJogador1 or comando == comandoPontoJogador2 then
     if comando == comandoPontoJogador1 then
-      print('3')
       gpio.write(ledJogador2, gpio.LOW)
       gpio.write(ledJogador1, gpio.HIGH)
     elseif comando == comandoPontoJogador2 then
-      print('4')
       gpio.write(ledJogador1, gpio.LOW)
       gpio.write(ledJogador2, gpio.HIGH)
     end

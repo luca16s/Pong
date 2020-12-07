@@ -142,7 +142,7 @@ end
 function ObjetosDesenhaveis()
   love.graphics.setFont(fonte)
   if mensagem==false then
-    love.graphics.print("O primeiro a marcar 5 pontos vence!",65,200)
+    love.graphics.print("O primeiro a marcar 2 pontos vence!", 65, 200)
   end
   love.graphics.rectangle("fill", P1.x,P1.y ,P1.largura,P1.altura+5)
   love.graphics.rectangle("fill", P2.x,P2.y ,P2.largura,P2.altura+5)
