@@ -1,10 +1,30 @@
+---------------------------------------------
 local ConstanteLove = require 'ConstanteLove'
-local mqttLove = require "mqttLoveLibrary"
-
 local comprimento, largura = love.graphics.getDimensions()
-math.randomseed(os.time())
 local ParaJogo=true
-
+local FinalPartida=false
+local placarP1=0
+local placarP2=0
+mensagem=false
+math.randomseed(os.time())
+---------------------------------------------
+function defineCos()
+  local angulosCos=math.random(55,90)
+  local criterio=math.random(0,9)
+  if criterio%2==1 then
+    angulosCos=-angulosCos
+  end
+  return angulosCos
+end
+function defineSen()
+  local angulosSen=math.random(55,90)
+  local criterio=math.random(0,9)
+  if criterio%2==1 then
+    angulosSen=-angulosSen
+  end
+  return angulosSen
+end
+--
 local bola = {
     raio = ConstanteLove.raioBola,
     posicao = {
@@ -12,8 +32,8 @@ local bola = {
         Y = (largura / 2) - (ConstanteLove.raioBola / 2),
     },
     velocidade = {
-        X = 200 * math.cos(math.random() * 2 * math.pi),
-        Y = 200 * math.sin(math.random() * 2 * math.pi),
+        X = 10,
+        Y = -200,
     },
     audio = love.audio.newSource(ConstanteLove.somBola, "static"),
 }
@@ -29,11 +49,8 @@ local function definirPosicaoCentralJogadores(tamanhoRaquete)
     return (comprimento / 2) - (tamanhoRaquete / 2), largura
 end
 posicaoHorizontal, posicaoVertical = definirPosicaoCentralJogadores(ConstanteLove.comprimentoJogador)
-local placarP1=0
-local placarP2=0
-
-local retanguloP1={x=posicaoHorizontal,y=50,largura=ConstanteLove.comprimentoJogador,altura=ConstanteLove.alturaJogador,placar=placarP1}
-local retanguloP2={x=posicaoHorizontal,y=posicaoVertical - 55,largura=ConstanteLove.comprimentoJogador,altura=ConstanteLove.alturaJogador,placar=placarP2}
+local P1={x=posicaoHorizontal,y=10,largura=ConstanteLove.comprimentoJogador,altura=ConstanteLove.alturaJogador,placar=placarP1}
+local P2={x=posicaoHorizontal,y=posicaoVertical - 20,largura=ConstanteLove.comprimentoJogador,altura=ConstanteLove.alturaJogador,placar=placarP2}
 
 local function movimentaBola(velocidade, bola)
     bola.posicao.X = bola.posicao.X + bola.velocidade.X * velocidade
@@ -54,75 +71,93 @@ local function movimentaBola(velocidade, bola)
       bola.velocidade.Y = -math.abs(bola.velocidade.Y)
       bola.audio:stop() bola.audio:play()
     end
-    if bola.posicao.X > retanguloP1.x and retanguloP1.x+retanguloP1.largura>bola.posicao.X and retanguloP1.y+retanguloP1.altura> bola.posicao.Y-6 then
+    if bola.posicao.X > P1.x and P1.x+P1.largura>bola.posicao.X and P1.y+P1.altura> bola.posicao.Y-20 and 0>bola.velocidade.Y then
       bola.velocidade.Y = math.abs(bola.velocidade.Y)
-      bola.velocidade.X=bola.velocidade.X+10
-      bola.velocidade.Y=bola.velocidade.Y+10
+      bola.velocidade.X=bola.velocidade.X+20
+      bola.velocidade.Y=bola.velocidade.Y+20
       bola.audio:stop() bola.audio:play()
-    elseif bola.posicao.X > retanguloP2.x and retanguloP2.x+retanguloP2.largura>bola.posicao.X and bola.posicao.Y+10>retanguloP2.y+retanguloP2.altura then --- MODIFICAR 
+    elseif bola.posicao.X > P2.x and P2.x+P2.largura>bola.posicao.X and bola.posicao.Y+20>P2.y+P2.altura and bola.velocidade.Y>0 then 
       bola.velocidade.Y = -math.abs(bola.velocidade.Y)
-      bola.velocidade.X=bola.velocidade.X+10
-      bola.velocidade.Y=bola.velocidade.Y+10
+      bola.velocidade.X=bola.velocidade.X-20
+      bola.velocidade.Y=bola.velocidade.Y-20
       bola.audio:stop() bola.audio:play()
-    elseif retanguloP1.y>bola.posicao.Y+30 then
+    --- Critério para pontuação ---
+    elseif P1.y-P1.altura/2>bola.posicao.Y then
       bola.posicao.X = comprimento/2
       bola.posicao.Y = largura/2
-      retanguloP1.x=posicaoHorizontal
-      retanguloP2.x=posicaoHorizontal
+      P1.x=posicaoHorizontal
+      P2.x=posicaoHorizontal
       ParaJogo=true
-      retanguloP2.placar=retanguloP2.placar+1
-      mqttLove.sendMessage(ConstanteLove.comandoPontoJogador2, ConstanteLove.canal)
-      bola.velocidade.X=200 * math.cos(math.random() * 2 * math.pi)
-      bola.velocidade.Y=200 * math.sin(math.random() * 2 * math.pi)
-    elseif bola.posicao.Y>retanguloP2.y+40 then
+      P2.placar=P2.placar+1
+      bola.velocidade.X=2*defineCos()
+      bola.velocidade.Y=2*defineSen()
+    elseif bola.posicao.Y>P2.y+P2.altura/2 then
       bola.posicao.X = comprimento/2
       bola.posicao.Y = largura/2
-      retanguloP1.x=posicaoHorizontal
-      retanguloP2.x=posicaoHorizontal
+      P1.x=posicaoHorizontal
+      P2.x=posicaoHorizontal
       ParaJogo=true
-      retanguloP1.placar=retanguloP1.placar+1
-      mqttLove.sendMessage(ConstanteLove.comandoPontoJogador1, ConstanteLove.canal)
-      bola.velocidade.X=200 * math.cos(math.random() * 2 * math.pi)
-      bola.velocidade.Y=200 * math.sin(math.random() * 2 * math.pi)
+      P1.placar=P1.placar+1
+      bola.velocidade.X=2*defineCos()
+      bola.velocidade.Y=2*defineSen()
   end
 end
 function movimentaP1(dt)
-  if love.keyboard.isDown("right") then --- Movimentação do player 1
-      retanguloP1.x=retanguloP1.x + 200*dt
+  if love.keyboard.isDown("right") then --- Movimentação do player 1 
+      P1.x=P1.x + 300*dt
       ParaJogo=false
+      mensagem=true
     elseif love.keyboard.isDown("left") then
-      retanguloP1.x=retanguloP1.x - 200*dt
+      P1.x=P1.x - 300*dt
       ParaJogo=false
+      mensagem=true
     end
-    if retanguloP1.x+retanguloP1.largura>comprimento then --- Colisão com o canto da tela
-      retanguloP1.x=retanguloP1.x-5
-    elseif 0>retanguloP1.x then
-      retanguloP1.x=retanguloP1.x+5
+    if P1.x+P1.largura>comprimento then --- Colisão com o canto da tela
+      P1.x=P1.x-5
+    elseif 0>P1.x then
+      P1.x=P1.x+5
     end
 end
-
-local function trataMensagemRecebida(mensagem)
-end
-
-function love.load()
-  fonte=love.graphics.newFont(ConstanteLove.nomeFonte,24)
-  construirJanela()
-  mqttLove.start(ConstanteLove.hostServer, "luca16s", ConstanteLove.canal, trataMensagemRecebida)
-end
-
-function love.update(dt)
-  mqttLove.checkMessages()
-  movimentaP1(dt)
-  if ParaJogo==false then
-    movimentaBola(dt, bola)
+function restart()
+  if love.keyboard.isDown("return") then
+    FinalPartida=false
+    P1.placar=0
+    P2.placar=0
   end
 end
+function love.load()
+  fonte=love.graphics.newFont(ConstanteLove.nomeFonte,24)
+  mqttLove.start(ConstanteLove.hostServer, "luca16s", ConstanteLove.canal, trataMensagemRecebida)
+  construirJanela()
+end
+function love.update(dt)
+  movimentaP1(dt)
+  restart()
+  if ParaJogo==false and FinalPartida==false then
+    movimentaBola(dt, bola) 
 
-function love.draw()
-  love.graphics.rectangle("fill", retanguloP1.x,retanguloP1.y , retanguloP1.largura,retanguloP1.altura)
-  love.graphics.rectangle("fill", retanguloP2.x,retanguloP2.y , retanguloP2.largura,retanguloP2.altura)
+end
+end
+function ObjetosDesenhaveis()
   love.graphics.setFont(fonte)
-  love.graphics.print("P1 : "..retanguloP1.placar,50,largura/2)
-  love.graphics.print("P2 : "..retanguloP2.placar,comprimento-150,largura/2)
+  if mensagem==false then
+    love.graphics.print("O primeiro a marcar 5 pontos vence!",65,200)
+  end
+  love.graphics.rectangle("fill", P1.x,P1.y ,P1.largura,P1.altura+5)
+  love.graphics.rectangle("fill", P2.x,P2.y ,P2.largura,P2.altura+5)
+  love.graphics.print("P1 : "..P1.placar,50,-10+largura/2)
+  love.graphics.print("P2 : "..P2.placar,comprimento-150,-10+largura/2)
   love.graphics.circle("fill", bola.posicao.X, bola.posicao.Y, bola.raio)
+  if P1.placar==2  then
+    love.graphics.print("P1 Venceu!",comprimento-500,largura-450)
+    love.graphics.print("Pressione Enter para jogar novamente!",comprimento-765,largura-400)
+    FinalPartida=true
+  elseif P2.placar==2 then
+    love.graphics.print("P2 Venceu!",comprimento-500,largura-450)
+    love.graphics.print("Pressione Enter para jogar novamente!",comprimento-765,largura-400)
+    FinalPartida=true
+  end
+end
+function love.draw()
+  ObjetosDesenhaveis()
 end
