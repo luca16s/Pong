@@ -19,9 +19,8 @@ PongObjects.Jogo = {
     seno = defineAngulo,
     cosseno = defineAngulo,
     mostrarMensagemInicial = true,
-    reiniciarJogo = false,
-    iniciarPartida = false,
-    pausarPartida = false
+    paraJogo = true,
+    finalPartida = false,
 }
 
 PongObjects.Bola = {

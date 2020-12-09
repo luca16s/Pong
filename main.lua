@@ -1,11 +1,12 @@
 local ConstanteLove = require 'ConstanteLove'
 local ObjetosPong = require 'PongObjects'
 local MqttServer = require 'mqttLoveLibrary'
+local PongUtilities = require 'PongUtilities'
 
-local Jogo = ObjetosPong.Jogo
-local Bola = ObjetosPong.Bola
-local Jogador1 = ObjetosPong.Player1
-local Jogador2 = ObjetosPong.Player2
+local Jogo = PongUtilities.CopiarTabela(ObjetosPong.Jogo)
+local Bola = PongUtilities.CopiarTabela(ObjetosPong.Bola)
+local Jogador1 = PongUtilities.CopiarTabela(ObjetosPong.Player1)
+local Jogador2 = PongUtilities.CopiarTabela(ObjetosPong.Player2)
 
 local function construirJanela()
   love.window.setMode(ConstanteLove.comprimentoJanela, ConstanteLove.larguraJanela)
@@ -14,7 +15,7 @@ local function construirJanela()
     love.window.setIcon(love.image.newImageData(ConstanteLove.IconeJogo))
 end
 
-local function movimentaBola(velocidade, bola, jogador1, jogador2)
+local function movimentaBola(velocidade, jogo, bola, jogador1, jogador2)
     bola.posicao.X = bola.posicao.X + bola.velocidade.X * velocidade
     bola.posicao.Y = bola.posicao.Y + bola.velocidade.Y * velocidade
 
@@ -51,6 +52,7 @@ local function movimentaBola(velocidade, bola, jogador1, jogador2)
       bola.posicao.Y = ConstanteLove.larguraJanela/2
       jogador1.X = PongObjects.posicaoHorizontal
       jogador2.X = PongObjects.posicaoHorizontal
+      jogo.paraJogo = true
       jogador2.placar = jogador2.placar + 1
       MqttServer.sendMessage(ConstanteLove.comandoPontoJogador2, ConstanteLove.canalJogo)
       bola.velocidade.X = 2 * Jogo.cosseno()
@@ -60,6 +62,7 @@ local function movimentaBola(velocidade, bola, jogador1, jogador2)
       bola.posicao.Y = ConstanteLove.larguraJanela/2
       jogador1.X = PongObjects.posicaoHorizontal
       jogador2.X = PongObjects.posicaoHorizontal
+      jogo.paraJogo = true
       jogador1.placar = jogador1.placar + 1
       MqttServer.sendMessage(ConstanteLove.comandoPontoJogador1, ConstanteLove.canalJogo)
       bola.velocidade.X = 2 * Jogo.cosseno()
@@ -89,11 +92,13 @@ local function movimentaJogador(jogador, jogo, velocidade)
 end
 
 local function movimentaP1(jogador, jogo, velocidade)
+  jogo.paraJogo = false
   movimentaJogador(jogador, jogo, velocidade)
   validaColisaoJogador(jogador, ConstanteLove.comprimentoJanela)
 end
 
 local function movimentaP2(jogador, jogo, velocidade)
+  jogo.paraJogo = false
   movimentaJogador(jogador, jogo, velocidade)
   validaColisaoJogador(jogador, ConstanteLove.comprimentoJanela)
 end
@@ -121,22 +126,19 @@ local function ObjetosDesenhaveis()
   if Jogador1.placar == ConstanteLove.pontuacaoFinalJogo  then
     love.graphics.print("P1 Venceu!", ConstanteLove.comprimentoJanela - 500, ConstanteLove.larguraJanela - 450)
     love.graphics.print("Pressione Enter para jogar novamente!", ConstanteLove.comprimentoJanela - 765, ConstanteLove.larguraJanela - 400)
-    Jogo.reiniciarJogo = true
+    Jogo.finalPartida = true
   elseif Jogador2.placar == ConstanteLove.pontuacaoFinalJogo then
     love.graphics.print("P2 Venceu!", ConstanteLove.comprimentoJanela - 500, ConstanteLove.larguraJanela - 450)
     love.graphics.print("Pressione Enter para jogar novamente!", ConstanteLove.comprimentoJanela - 765, ConstanteLove.larguraJanela - 400)
-    Jogo.reiniciarJogo = true
+    Jogo.finalPartida = true
   end
 end
 
 local function reiniciarJogo()
-  package.loaded.ObjetosPong = nil
-  ObjetosPong = require 'PongObjects'
-
-  Jogo = ObjetosPong.Jogo
-  Bola = ObjetosPong.Bola
-  Jogador1 = ObjetosPong.Player1
-  Jogador2 = ObjetosPong.Player2
+  Jogo = PongUtilities.CopiarTabela(ObjetosPong.Jogo)
+  Bola = PongUtilities.CopiarTabela(ObjetosPong.Bola)
+  Jogador1 = PongUtilities.CopiarTabela(ObjetosPong.Player1)
+  Jogador2 = PongUtilities.CopiarTabela(ObjetosPong.Player2)
 end
 
 function love.load()
@@ -148,13 +150,12 @@ function love.update(dt)
   movimentaP1(Jogador1, Jogo, dt)
   movimentaP2(Jogador2, Jogo, dt)
 
-  if Jogo.iniciarPartida or Jogo.pausarPartida then
-    movimentaBola(dt, Bola, Jogador1, Jogador2)
+  if Jogo.finalPartida then
+    reiniciarJogo()
   end
 
-  if Jogo.reiniciarJogo == true then
-    reiniciarJogo()
-    movimentaBola(dt, Bola, Jogador1, Jogador2)
+  if Jogo.paraJogo == false and Jogo.finalPartida == false then
+    movimentaBola(dt, Jogo, Bola, Jogador1, Jogador2)
   end
 
   MqttServer.checkMessages()
@@ -172,12 +173,12 @@ function love.keypressed(key)
       Jogo.iniciarPartida = true
       Jogador1.comando = ConstanteLove.comandoMoverDireita
     elseif key == 'return' then
-      Jogo.reiniciarJogo = true
+      Jogo.finalPartida = true
     elseif key == 'space' then
-      if Jogo.pausarPartida then
-        Jogo.pausarPartida = false
+      if Jogo.paraJogo then
+        Jogo.paraJogo = false
       else
-        Jogo.pausarPartida = true
+        Jogo.paraJogo = true
       end
     end
 end
