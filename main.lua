@@ -88,13 +88,13 @@ local function movimentaBola(velocidade, bola)
 
     if bola.posicao.X > Player1.x and Player1.x + Player1.largura > bola.posicao.X and Player1.y + Player1.altura > bola.posicao.Y-20 and 0 > bola.velocidade.Y then
       bola.velocidade.Y = math.abs(bola.velocidade.Y)
-      bola.velocidade.X = bola.velocidade.X+50
-      bola.velocidade.Y = bola.velocidade.Y+50
+      bola.velocidade.X = bola.velocidade.X + 50
+      bola.velocidade.Y = bola.velocidade.Y + 50
       bola.audio:stop() bola.audio:play()
     elseif bola.posicao.X > Player2.x and Player2.x + Player2.largura > bola.posicao.X and bola.posicao.Y + 20 > Player2.y + Player2.altura and bola.velocidade.Y > 0 then
       bola.velocidade.Y = -math.abs(bola.velocidade.Y)
-      bola.velocidade.X = bola.velocidade.X-50
-      bola.velocidade.Y = bola.velocidade.Y-50
+      bola.velocidade.X = bola.velocidade.X - 50
+      bola.velocidade.Y = bola.velocidade.Y - 50
       bola.audio:stop() bola.audio:play()
     elseif Player1.y - Player1.altura/2 > bola.posicao.Y then
       bola.posicao.X = comprimentoJanela/2
@@ -102,7 +102,8 @@ local function movimentaBola(velocidade, bola)
       Player1.x = posicaoHorizontal
       Player2.x = posicaoHorizontal
       jogo.encerraPartida = true
-      Player2.placar = Player2.placar+1
+      Player2.placar = Player2.placar + 1
+      MqttServer.sendMessage(ConstanteLove.comandoPontoJogador2, ConstanteLove.canalJogo)
       bola.velocidade.X = 2 * jogo.cosseno()
       bola.velocidade.Y = 2 * jogo.seno()
     elseif bola.posicao.Y > Player2.y + Player2.altura/2 then
@@ -112,6 +113,7 @@ local function movimentaBola(velocidade, bola)
       Player2.x = posicaoHorizontal
       jogo.encerraPartida = true
       Player1.placar = Player1.placar + 1
+      MqttServer.sendMessage(ConstanteLove.comandoPontoJogador1, ConstanteLove.canalJogo)
       bola.velocidade.X = 2 * jogo.cosseno()
       bola.velocidade.Y = 2 * jogo.seno()
     end

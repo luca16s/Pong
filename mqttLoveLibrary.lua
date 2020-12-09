@@ -35,9 +35,9 @@ end
 	message: message to be sent
 	topic: optional, channel to send the message. If nil the message will be sent to a default channel
 ]]
-function MQTT.sendMessage(message,topic)
+function MQTT.sendMessage(message, topic)
   topic = topic or defaultTopic -- default topic for publishing
-  mqttClient:publish(topic,message)
+  mqttClient:publish(topic, message)
   print ("sending message ".. message .. " to topic " .. topic)
 end
 
