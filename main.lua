@@ -9,10 +9,10 @@ local Jogador1 = PongUtilities.CopiarTabela(ObjetosPong.Player1)
 local Jogador2 = PongUtilities.CopiarTabela(ObjetosPong.Player2)
 
 local function construirJanela()
+  love.window.setFullscreen(false)
+  love.window.setTitle(ConstanteLove.TituloJogo)
+  love.window.setIcon(love.image.newImageData(ConstanteLove.IconeJogo))
   love.window.setMode(ConstanteLove.comprimentoJanela, ConstanteLove.larguraJanela)
-    love.window.setFullscreen(false)
-    love.window.setTitle(ConstanteLove.TituloJogo)
-    love.window.setIcon(love.image.newImageData(ConstanteLove.IconeJogo))
 end
 
 local function movimentaBola(velocidade, jogo, bola, jogador1, jogador2)
