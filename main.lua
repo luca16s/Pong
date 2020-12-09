@@ -76,7 +76,7 @@ local function realizarMovimento(jogo, jogador, movimento, velocidade)
   jogo.iniciarPartida = true
 end
 
-local function validaColisaoJogador(jogador, comprimentoJanela)
+local function validarColisaoJogador(jogador, comprimentoJanela)
   if jogador.X + jogador.largura > comprimentoJanela then
     jogador.X = jogador.X - 5
   elseif 0 > jogador.X then
@@ -84,7 +84,7 @@ local function validaColisaoJogador(jogador, comprimentoJanela)
   end
 end
 
-local function movimentarPersonagem(jogador, jogo, velocidade)
+local function movimentarJogador(jogador, jogo, velocidade)
   if jogo.finalizarPartida == false then
     if jogador.comando == ConstanteLove.comandoMoverDireita then
       realizarMovimento(jogo, jogador, 300, velocidade)
@@ -92,7 +92,7 @@ local function movimentarPersonagem(jogador, jogo, velocidade)
       realizarMovimento(jogo, jogador, -300, velocidade)
     end
   end
-  validaColisaoJogador(jogador, ConstanteLove.comprimentoJanela)
+  validarColisaoJogador(jogador, ConstanteLove.comprimentoJanela)
 end
 
 local function movimentaPlayerNode(comandoRecebido)
@@ -114,8 +114,8 @@ end
 
 function love.update(dt)
   if Jogo.pausarPartida == false then
-    movimentarPersonagem(Jogador1, Jogo, dt)
-    movimentarPersonagem(Jogador2, Jogo, dt)
+    movimentarJogador(Jogador1, Jogo, dt)
+    movimentarJogador(Jogador2, Jogo, dt)
 
     if Jogo.reiniciarPartida then
       reiniciarJogo()
@@ -130,18 +130,20 @@ function love.update(dt)
 end
 
 function love.draw()
+  love.graphics.draw(Jogo.imagem, 0, 0)
   love.graphics.setFont(Jogo.fonte)
 
   if Jogo.mostrarMensagemInicial then
     love.graphics.print(string.format("O primeiro a marcar %d pontos vence!", ConstanteLove.pontuacaoFinalJogo), 65, 200)
   end
 
+  love.graphics.draw(Bola.imagem, Bola.posicao.X - 10, Bola.posicao.Y - 10, 0, 0.05)
   love.graphics.circle("fill", Bola.posicao.X, Bola.posicao.Y, Bola.raio)
   love.graphics.setColor(1, 0, 0)
   love.graphics.setColor(1, 1, 1)
 
-  love.graphics.rectangle("fill", Jogador1.X, Jogador1.Y, Jogador1.largura, Jogador1.altura + 5)
-  love.graphics.rectangle("fill", Jogador2.X, Jogador2.Y, Jogador2.largura, Jogador2.altura + 5)
+  love.graphics.draw(Jogador1.imagem,Jogador1.X - 10, Jogador1.Y - 15, 0, 0.3, 0.2)
+  love.graphics.draw(Jogador2.imagem,Jogador2.X - 10, Jogador2.Y - 10, 0, 0.3, 0.2)
 
   love.graphics.print(string.format("P1 : %d", Jogador1.placar), 50, -10 + ConstanteLove.larguraJanela/2)
   love.graphics.print(string.format("P2 : %d", Jogador2.placar), ConstanteLove.comprimentoJanela - 150, -10 + ConstanteLove.larguraJanela/2)
