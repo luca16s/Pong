@@ -1,5 +1,4 @@
 local ConstanteLove = require 'ConstanteLove'
-local Decoder = require 'Decodificador'
 local MqttServer = require 'mqttLoveLibrary'
 local comprimentoJanela, larguraJanela = love.graphics.getDimensions()
 local posicaoHorizontal = (comprimentoJanela / 2) - (ConstanteLove.comprimentoJogador / 2)
@@ -206,4 +205,18 @@ end
 
 function love.draw()
   ObjetosDesenhaveis()
+end
+
+function love.keypressed(key)
+    if key == 'left' then
+      Player1.comando = ConstanteLove.comandoMoverEsquerda
+    elseif key == 'right' then
+      Player1.comando = ConstanteLove.comandoMoverDireita
+    end
+end
+
+function love.keyreleased(key)
+  if key == 'left' or key == 'right' then
+    Player1.comando = ConstanteLove.comandoParar
+  end
 end
