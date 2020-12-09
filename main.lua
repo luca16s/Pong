@@ -121,18 +121,20 @@ function love.load()
 end
 
 function love.update(dt)
-  movimentaP1(Jogador1, Jogo, dt)
-  movimentaP2(Jogador2, Jogo, dt)
+  if Jogo.pausarPartida == false then
+    movimentaP1(Jogador1, Jogo, dt)
+    movimentaP2(Jogador2, Jogo, dt)
 
-  if Jogo.reiniciarPartida then
-    reiniciarJogo()
+    if Jogo.reiniciarPartida then
+      reiniciarJogo()
+    end
+
+    if Jogo.iniciarPartida and Jogo.finalizarPartida == false then
+      movimentaBola(dt, Jogo, Bola, Jogador1, Jogador2)
+    end
+
+    MqttServer.checkMessages()
   end
-
-  if Jogo.iniciarPartida and Jogo.finalizarPartida == false then
-    movimentaBola(dt, Jogo, Bola, Jogador1, Jogador2)
-  end
-
-  MqttServer.checkMessages()
 end
 
 function love.draw()
@@ -170,6 +172,17 @@ function love.keypressed(key)
       Jogador1.comando = ConstanteLove.comandoMoverDireita
     elseif key == 'return' then
       Jogo.reiniciarPartida = true
+    elseif key == 'space' then
+      if Jogo.pausarPartida then
+        Jogo.pausarPartida = false
+      else
+        Jogo.pausarPartida = true
+      end
+    elseif key == 'escape' then
+      local buttons = { "Não", "Sim", escapebutton = 2 }
+      if love.window.showMessageBox('PongLua', 'Deseja Encerrar o jogo?', buttons) == 2 then
+        love.quit()
+      end
     end
 end
 
