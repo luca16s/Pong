@@ -181,7 +181,7 @@ function love.keypressed(key)
     elseif key == 'escape' then
       local buttons = { "Não", "Sim", escapebutton = 2 }
       if love.window.showMessageBox('PongLua', 'Deseja Encerrar o jogo?', buttons) == 2 then
-        love.quit()
+        love.event.quit()
       end
     end
 end
