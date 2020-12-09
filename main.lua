@@ -53,6 +53,7 @@ local function movimentaBola(velocidade, jogo, bola, jogador1, jogador2)
       jogador1.X = ObjetosPong.posicaoHorizontal
       jogador2.X = ObjetosPong.posicaoHorizontal
       jogador2.placar = jogador2.placar + 1
+      jogo.iniciarPartida = false
       MqttServer.sendMessage(ConstanteLove.comandoPontoJogador2, ConstanteLove.canalJogo)
       bola.velocidade.X = 2 * ObjetosPong.defineAngulo()
       bola.velocidade.Y = 2 * ObjetosPong.defineAngulo()
@@ -62,6 +63,7 @@ local function movimentaBola(velocidade, jogo, bola, jogador1, jogador2)
       jogador1.X = ObjetosPong.posicaoHorizontal
       jogador2.X = ObjetosPong.posicaoHorizontal
       jogador1.placar = jogador1.placar + 1
+      jogo.iniciarPartida = false
       MqttServer.sendMessage(ConstanteLove.comandoPontoJogador1, ConstanteLove.canalJogo)
       bola.velocidade.X = 2 * ObjetosPong.defineAngulo()
       bola.velocidade.Y = 2 * ObjetosPong.defineAngulo()
@@ -71,6 +73,7 @@ end
 local function realizaMovimento(jogo, jogador, movimento, velocidade)
   jogador.X = jogador.X + movimento * velocidade
   jogo.mostrarMensagemInicial = false
+  jogo.iniciarPartida = true
 end
 
 local function validaColisaoJogador(jogador, comprimentoJanela)
@@ -82,12 +85,13 @@ local function validaColisaoJogador(jogador, comprimentoJanela)
 end
 
 local function movimentaJogador(jogador, jogo, velocidade)
-  if jogador.comando == ConstanteLove.comandoMoverDireita then
-    realizaMovimento(jogo, jogador, 300, velocidade)
-  elseif jogador.comando == ConstanteLove.comandoMoverEsquerda then
-    realizaMovimento(jogo, jogador, -300, velocidade)
+  if Jogo.finalizarPartida == false then
+    if jogador.comando == ConstanteLove.comandoMoverDireita then
+      realizaMovimento(jogo, jogador, 300, velocidade)
+    elseif jogador.comando == ConstanteLove.comandoMoverEsquerda then
+      realizaMovimento(jogo, jogador, -300, velocidade)
+    end
   end
-  jogo.iniciarPartida = true
 end
 
 local function movimentaP1(jogador, jogo, velocidade)
@@ -122,13 +126,10 @@ function love.update(dt)
 
   if Jogo.reiniciarPartida then
     reiniciarJogo()
-    Jogo.reiniciarPartida = false
-    Jogo.finalizarPartida = false
   end
 
-  if Jogo.iniciarPartida or Jogo.finalizarPartida then
+  if Jogo.iniciarPartida and Jogo.finalizarPartida == false then
     movimentaBola(dt, Jogo, Bola, Jogador1, Jogador2)
-    Jogo.iniciarPartida = false
   end
 
   MqttServer.checkMessages()
@@ -154,9 +155,11 @@ function love.draw()
   if Jogador1.placar == ConstanteLove.pontuacaoFinalJogo  then
     love.graphics.print("P1 Venceu!", ConstanteLove.comprimentoJanela - 500, ConstanteLove.larguraJanela - 450)
     love.graphics.print("Pressione Enter para jogar novamente!", ConstanteLove.comprimentoJanela - 765, ConstanteLove.larguraJanela - 400)
+    Jogo.finalizarPartida = true
   elseif Jogador2.placar == ConstanteLove.pontuacaoFinalJogo then
     love.graphics.print("P2 Venceu!", ConstanteLove.comprimentoJanela - 500, ConstanteLove.larguraJanela - 450)
     love.graphics.print("Pressione Enter para jogar novamente!", ConstanteLove.comprimentoJanela - 765, ConstanteLove.larguraJanela - 400)
+    Jogo.finalizarPartida = true
   end
 end
 
@@ -167,7 +170,6 @@ function love.keypressed(key)
       Jogador1.comando = ConstanteLove.comandoMoverDireita
     elseif key == 'return' then
       Jogo.reiniciarPartida = true
-      Jogo.finalizarPartida = true
     end
 end
 
