@@ -70,7 +70,7 @@ local function movimentaBola(velocidade, jogo, bola, jogador1, jogador2)
     end
 end
 
-local function realizaMovimento(jogo, jogador, movimento, velocidade)
+local function realizarMovimento(jogo, jogador, movimento, velocidade)
   jogador.X = jogador.X + movimento * velocidade
   jogo.mostrarMensagemInicial = false
   jogo.iniciarPartida = true
@@ -84,23 +84,14 @@ local function validaColisaoJogador(jogador, comprimentoJanela)
   end
 end
 
-local function movimentaJogador(jogador, jogo, velocidade)
-  if Jogo.finalizarPartida == false then
+local function movimentarPersonagem(jogador, jogo, velocidade)
+  if jogo.finalizarPartida == false then
     if jogador.comando == ConstanteLove.comandoMoverDireita then
-      realizaMovimento(jogo, jogador, 300, velocidade)
+      realizarMovimento(jogo, jogador, 300, velocidade)
     elseif jogador.comando == ConstanteLove.comandoMoverEsquerda then
-      realizaMovimento(jogo, jogador, -300, velocidade)
+      realizarMovimento(jogo, jogador, -300, velocidade)
     end
   end
-end
-
-local function movimentaP1(jogador, jogo, velocidade)
-  movimentaJogador(jogador, jogo, velocidade)
-  validaColisaoJogador(jogador, ConstanteLove.comprimentoJanela)
-end
-
-local function movimentaP2(jogador, jogo, velocidade)
-  movimentaJogador(jogador, jogo, velocidade)
   validaColisaoJogador(jogador, ConstanteLove.comprimentoJanela)
 end
 
@@ -113,6 +104,7 @@ local function reiniciarJogo()
   Bola = PongUtilities.CopiarTabela(ObjetosPong.Bola)
   Jogador1 = PongUtilities.CopiarTabela(ObjetosPong.Player1)
   Jogador2 = PongUtilities.CopiarTabela(ObjetosPong.Player2)
+  MqttServer.sendMessage(ConstanteLove.comandoApagarLeds, ConstanteLove.canalJogo)
 end
 
 function love.load()
@@ -122,8 +114,8 @@ end
 
 function love.update(dt)
   if Jogo.pausarPartida == false then
-    movimentaP1(Jogador1, Jogo, dt)
-    movimentaP2(Jogador2, Jogo, dt)
+    movimentarPersonagem(Jogador1, Jogo, dt)
+    movimentarPersonagem(Jogador2, Jogo, dt)
 
     if Jogo.reiniciarPartida then
       reiniciarJogo()

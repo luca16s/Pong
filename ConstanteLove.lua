@@ -16,6 +16,7 @@ ConstanteLove.comandoParar = 'STOP'
 ConstanteLove.imagemJogador = 'retangulo.png'
 ConstanteLove.alturaJogador = 5
 ConstanteLove.comprimentoJanela = 800
+ConstanteLove.comandoApagarLeds = 'OFF'
 ConstanteLove.comprimentoJogador = 120
 ConstanteLove.comandoMoverDireita = 'RIGHT'
 ConstanteLove.comandoMoverEsquerda = 'LEFT'

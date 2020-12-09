@@ -15,6 +15,7 @@ local comandoPontoJogador2 = 'RED'
 local comandoMoverEsquerda = 'LEFT'
 local comandoPontoJogador1 = 'GREEN'
 local comandoVelocidadeBola = '%f'
+local comandoApagarLed = 'OFF'
 
 gpio.mode(ledJogador1, gpio.OUTPUT)
 gpio.mode(ledJogador2, gpio.OUTPUT)
@@ -57,6 +58,11 @@ local function comandoRecebido(comando)
       gpio.write(ledJogador2, gpio.HIGH)
     end
     mensagemVelocidadeBola(string.format(comandoVelocidadeBola, adc.read(sensor)), canalJogo)
+  end
+
+  if comando == comandoApagarLed then
+    gpio.write(ledJogador1, gpio.LOW)
+    gpio.write(ledJogador2, gpio.LOW)
   end
 end
 
