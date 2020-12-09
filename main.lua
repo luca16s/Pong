@@ -2,6 +2,7 @@ local ConstanteLove = require 'ConstanteLove'
 local Decoder = require 'Decodificador'
 local MqttServer = require 'mqttLoveLibrary'
 local comprimentoJanela, larguraJanela = love.graphics.getDimensions()
+local posicaoHorizontal = (comprimentoJanela / 2) - (ConstanteLove.comprimentoJogador / 2)
 math.randomseed(os.time())
 
 local function defineAngulo()
@@ -37,21 +38,20 @@ local bola = {
     audio = love.audio.newSource(ConstanteLove.somBola, 'static'),
 }
 
-local posicaoHorizontal = (comprimentoJanela / 2) - (ConstanteLove.comprimentoJogador / 2)
-
 local Player1 = {
   --imagem = love.graphics.newImage(ConstanteLove.imagemJogador),
-  x = posicaoHorizontal,
-  y = 10,
+  X = posicaoHorizontal,
+  Y = 10,
   largura = ConstanteLove.comprimentoJogador,
   altura = ConstanteLove.alturaJogador,
-  placar = 0
+  placar = 0,
+  comando = nil
 }
 
 local Player2 = {
   --imagem = love.graphics.newImage(ConstanteLove.imagemJogador),
-  x = posicaoHorizontal,
-  y = larguraJanela - 20,
+  X = posicaoHorizontal,
+  Y = larguraJanela - 20,
   largura = ConstanteLove.comprimentoJogador,
   altura = ConstanteLove.alturaJogador,
   placar = 0,
@@ -86,31 +86,31 @@ local function movimentaBola(velocidade, bola)
       bola.audio:stop() bola.audio:play()
     end
 
-    if bola.posicao.X > Player1.x and Player1.x + Player1.largura > bola.posicao.X and Player1.y + Player1.altura > bola.posicao.Y-20 and 0 > bola.velocidade.Y then
+    if bola.posicao.X > Player1.X and Player1.X + Player1.largura > bola.posicao.X and Player1.Y + Player1.altura > bola.posicao.Y-20 and 0 > bola.velocidade.Y then
       bola.velocidade.Y = math.abs(bola.velocidade.Y)
       bola.velocidade.X = bola.velocidade.X + 50
       bola.velocidade.Y = bola.velocidade.Y + 50
       bola.audio:stop() bola.audio:play()
-    elseif bola.posicao.X > Player2.x and Player2.x + Player2.largura > bola.posicao.X and bola.posicao.Y + 20 > Player2.y + Player2.altura and bola.velocidade.Y > 0 then
+    elseif bola.posicao.X > Player2.X and Player2.X + Player2.largura > bola.posicao.X and bola.posicao.Y + 20 > Player2.Y + Player2.altura and bola.velocidade.Y > 0 then
       bola.velocidade.Y = -math.abs(bola.velocidade.Y)
       bola.velocidade.X = bola.velocidade.X - 50
       bola.velocidade.Y = bola.velocidade.Y - 50
       bola.audio:stop() bola.audio:play()
-    elseif Player1.y - Player1.altura/2 > bola.posicao.Y then
+    elseif Player1.Y - Player1.altura/2 > bola.posicao.Y then
       bola.posicao.X = comprimentoJanela/2
       bola.posicao.Y = larguraJanela/2
-      Player1.x = posicaoHorizontal
-      Player2.x = posicaoHorizontal
+      Player1.X = posicaoHorizontal
+      Player2.X = posicaoHorizontal
       jogo.encerraPartida = true
       Player2.placar = Player2.placar + 1
       MqttServer.sendMessage(ConstanteLove.comandoPontoJogador2, ConstanteLove.canalJogo)
       bola.velocidade.X = 2 * jogo.cosseno()
       bola.velocidade.Y = 2 * jogo.seno()
-    elseif bola.posicao.Y > Player2.y + Player2.altura/2 then
+    elseif bola.posicao.Y > Player2.Y + Player2.altura/2 then
       bola.posicao.X = comprimentoJanela/2
       bola.posicao.Y = larguraJanela/2
-      Player1.x = posicaoHorizontal
-      Player2.x = posicaoHorizontal
+      Player1.X = posicaoHorizontal
+      Player2.X = posicaoHorizontal
       jogo.encerraPartida = true
       Player1.placar = Player1.placar + 1
       MqttServer.sendMessage(ConstanteLove.comandoPontoJogador1, ConstanteLove.canalJogo)
@@ -119,43 +119,39 @@ local function movimentaBola(velocidade, bola)
     end
 end
 
-local function movimentaP1(dt)
-  if love.keyboard.isDown("right") then
-      Player1.x = Player1.x + 300 * dt
-      jogo.encerraPartida = false
-      jogo.mostrarMensagemInicial = false
-    elseif love.keyboard.isDown("left") then
-      Player1.x = Player1.x - 300 * dt
-      jogo.encerraPartida = false
-      jogo.mostrarMensagemInicial = false
-    end
-
-    if Player1.x + Player1.largura > comprimentoJanela then
-      Player1.x = Player1.x - 5
-    elseif 0 > Player1.x then
-      Player1.x = Player1.x + 5
-    end
+local function realizaMovimento(jogo, jogador, movimento, velocidade)
+  jogador.X = jogador.X + movimento * velocidade
+  jogo.encerraPartida = false
+  jogo.mostrarMensagemInicial = false
 end
 
-local function movimentaP2(dt)
-  if Player2.comando == ConstanteLove.comandoMoverDireita then
-      Player2.x = Player2.x + 300 * dt
-      jogo.encerraPartida = false
-      jogo.mostrarMensagemInicial = false
-    elseif Player2.comando == ConstanteLove.comandoMoverEsquerda then
-      Player2.x = Player2.x - 300 * dt
-      jogo.encerraPartida = false
-      jogo.mostrarMensagemInicial = false
-    end
-
-    if Player2.x + Player2.largura > comprimentoJanela then
-      Player2.x = Player2.x - 5
-    elseif 0 > Player2.x then
-      Player2.x = Player2.x + 5
-    end
+local function validaColisaoJogador(jogador, comprimentoJanela)
+  if jogador.X + jogador.largura > comprimentoJanela then
+    jogador.X = jogador.X - 5
+  elseif 0 > jogador.X then
+    jogador.X = jogador.X + 5
+  end
 end
 
-local function movimentaPlayer(comandoRecebido)
+local function movimentaJogador(player, velocidade)
+  if player.comando == ConstanteLove.comandoMoverDireita then
+    realizaMovimento(jogo, player, 300, velocidade)
+  elseif player.comando == ConstanteLove.comandoMoverEsquerda then
+    realizaMovimento(jogo, player, -300, velocidade)
+  end
+end
+
+local function movimentaP1(velocidade)
+  movimentaJogador(Player1, velocidade)
+  validaColisaoJogador(Player1, comprimentoJanela)
+end
+
+local function movimentaP2(velocidade)
+  movimentaJogador(Player2, velocidade)
+  validaColisaoJogador(Player2, comprimentoJanela)
+end
+
+local function movimentaPlayerNode(comandoRecebido)
   Player2.comando = comandoRecebido
 end
 
@@ -169,8 +165,8 @@ local function ObjetosDesenhaveis()
   love.graphics.setColor(1, 0, 0)
   love.graphics.setColor(1, 1, 1)
 
-  love.graphics.rectangle("fill", Player1.x, Player1.y, Player1.largura, Player1.altura + 5)
-  love.graphics.rectangle("fill", Player2.x, Player2.y, Player2.largura, Player2.altura + 5)
+  love.graphics.rectangle("fill", Player1.X, Player1.Y, Player1.largura, Player1.altura + 5)
+  love.graphics.rectangle("fill", Player2.X, Player2.Y, Player2.largura, Player2.altura + 5)
   love.graphics.print("P1 : " .. Player1.placar, 50, -10 + larguraJanela/2)
   love.graphics.print("P2 : " .. Player2.placar, comprimentoJanela - 150, -10 + larguraJanela/2)
 
@@ -195,7 +191,7 @@ end
 
 function love.load()
   construirJanela()
-  MqttServer.start(ConstanteLove.hostServer, 'luca16s', ConstanteLove.canalJogo,  movimentaPlayer)
+  MqttServer.start(ConstanteLove.hostServer, 'luca16s', ConstanteLove.canalJogo,  movimentaPlayerNode)
 end
 
 function love.update(dt)

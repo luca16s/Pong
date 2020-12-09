@@ -11,12 +11,12 @@ ConstanteLove.TituloJogo = 'Pong'
 ConstanteLove.hostServer = 'localhost'
 ConstanteLove.imagemBola = 'meteoro.png'
 ConstanteLove.tamanhoFonte = 24
-ConstanteLove.comandoParar = '<PONG><STOP>'
+ConstanteLove.comandoParar = '<STOP>'
 ConstanteLove.imagemJogador = 'retangulo.png'
 ConstanteLove.alturaJogador = 5
 ConstanteLove.comprimentoJogador = 120
-ConstanteLove.comandoMoverDireita = '<PONG><MOVE><RIGHT>'
-ConstanteLove.comandoMoverEsquerda = '<PONG><MOVE><LEFT>'
-ConstanteLove.comandoPontoJogador1 = '<PONG><LIGHT><GREEN>'
-ConstanteLove.comandoPontoJogador2 = '<PONG><LIGHT><RED>'
+ConstanteLove.comandoMoverDireita = 'RIGHT'
+ConstanteLove.comandoMoverEsquerda = 'LEFT'
+ConstanteLove.comandoPontoJogador2 = 'RED'
+ConstanteLove.comandoPontoJogador1 = 'GREEN'
 return ConstanteLove

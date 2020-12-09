@@ -9,12 +9,12 @@ local botaoEsquerdo = 2
 
 local canalJogo = 'PONG_LUA_GAME'
 local hostServer = '192.168.1.2'
-local comandoParar = '<PONG><STOP>'
-local comandoMoverDireita = '<PONG><MOVE><RIGHT>'
-local comandoMoverEsquerda = '<PONG><MOVE><LEFT>'
-local comandoPontoJogador1 = '<PONG><LIGHT><GREEN>'
-local comandoPontoJogador2 = '<PONG><LIGHT><RED>'
-local comandoVelocidadeBola = '<PONG><%f>'
+local comandoParar = 'STOP'
+local comandoMoverDireita = 'RIGHT'
+local comandoPontoJogador2 = 'RED'
+local comandoMoverEsquerda = 'LEFT'
+local comandoPontoJogador1 = 'GREEN'
+local comandoVelocidadeBola = '%f'
 
 gpio.mode(ledJogador1, gpio.OUTPUT)
 gpio.mode(ledJogador2, gpio.OUTPUT)
