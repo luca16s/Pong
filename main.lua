@@ -104,7 +104,37 @@ local function movimentaPlayerNode(comandoRecebido)
   Jogador2.comando = comandoRecebido
 end
 
-local function ObjetosDesenhaveis()
+local function reiniciarJogo()
+  Jogo = PongUtilities.CopiarTabela(ObjetosPong.Jogo)
+  Bola = PongUtilities.CopiarTabela(ObjetosPong.Bola)
+  Jogador1 = PongUtilities.CopiarTabela(ObjetosPong.Player1)
+  Jogador2 = PongUtilities.CopiarTabela(ObjetosPong.Player2)
+end
+
+function love.load()
+  construirJanela()
+  MqttServer.start(ConstanteLove.hostServer, 'luca16s', ConstanteLove.canalJogo,  movimentaPlayerNode)
+end
+
+function love.update(dt)
+  movimentaP1(Jogador1, Jogo, dt)
+  movimentaP2(Jogador2, Jogo, dt)
+
+  if Jogo.reiniciarPartida then
+    reiniciarJogo()
+    Jogo.reiniciarPartida = false
+    Jogo.finalizarPartida = false
+  end
+
+  if Jogo.iniciarPartida or Jogo.finalizarPartida then
+    movimentaBola(dt, Jogo, Bola, Jogador1, Jogador2)
+    Jogo.iniciarPartida = false
+  end
+
+  MqttServer.checkMessages()
+end
+
+function love.draw()
   love.graphics.setFont(Jogo.fonte)
 
   if Jogo.mostrarMensagemInicial then
@@ -128,40 +158,6 @@ local function ObjetosDesenhaveis()
     love.graphics.print("P2 Venceu!", ConstanteLove.comprimentoJanela - 500, ConstanteLove.larguraJanela - 450)
     love.graphics.print("Pressione Enter para jogar novamente!", ConstanteLove.comprimentoJanela - 765, ConstanteLove.larguraJanela - 400)
   end
-end
-
-local function reiniciarJogo()
-  Jogo = PongUtilities.CopiarTabela(ObjetosPong.Jogo)
-  Bola = PongUtilities.CopiarTabela(ObjetosPong.Bola)
-  Jogador1 = PongUtilities.CopiarTabela(ObjetosPong.Player1)
-  Jogador2 = PongUtilities.CopiarTabela(ObjetosPong.Player2)
-end
-
-function love.load()
-  construirJanela()
-  MqttServer.start(ConstanteLove.hostServer, 'luca16s', ConstanteLove.canalJogo,  movimentaPlayerNode)
-end
-
-function love.update(dt)
-  movimentaP1(Jogador1, Jogo, dt)
-  movimentaP2(Jogador2, Jogo, dt)
-
-  if Jogo.reiniciarPartida then
-    reiniciarJogo()
-    Jogo.reiniciarPartida = false
-    Jogo.finalizarPartida = false
-  end
-
-  if Jogo.iniciarPartida then
-    movimentaBola(dt, Jogo, Bola, Jogador1, Jogador2)
-    Jogo.iniciarPartida = false
-  end
-
-  MqttServer.checkMessages()
-end
-
-function love.draw()
-  ObjetosDesenhaveis()
 end
 
 function love.keypressed(key)
