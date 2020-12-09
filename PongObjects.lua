@@ -4,7 +4,7 @@ PongObjects = {}
 PongObjects.posicaoHorizontal = (ConstanteLove.comprimentoJanela / 2) - (ConstanteLove.comprimentoJogador / 2)
 math.randomseed(os.time())
 
-local function defineAngulo()
+function PongObjects.defineAngulo()
   local angulo = math.random(55, 90)
   local criterio = math.random(0, 9)
 
@@ -16,11 +16,11 @@ end
 
 PongObjects.Jogo = {
     fonte = love.graphics.newFont(ConstanteLove.nomeFonte, ConstanteLove.tamanhoFonte),
-    seno = defineAngulo,
-    cosseno = defineAngulo,
     mostrarMensagemInicial = true,
-    paraJogo = true,
-    finalPartida = false,
+    iniciarPartida = false,
+    pausarPartida = false,
+    reiniciarPartida = false,
+    finalizarPartida = false
 }
 
 PongObjects.Bola = {

@@ -50,23 +50,21 @@ local function movimentaBola(velocidade, jogo, bola, jogador1, jogador2)
     elseif jogador1.Y - jogador1.altura/2 > bola.posicao.Y then
       bola.posicao.X = ConstanteLove.comprimentoJanela/2
       bola.posicao.Y = ConstanteLove.larguraJanela/2
-      jogador1.X = PongObjects.posicaoHorizontal
-      jogador2.X = PongObjects.posicaoHorizontal
-      jogo.paraJogo = true
+      jogador1.X = ObjetosPong.posicaoHorizontal
+      jogador2.X = ObjetosPong.posicaoHorizontal
       jogador2.placar = jogador2.placar + 1
       MqttServer.sendMessage(ConstanteLove.comandoPontoJogador2, ConstanteLove.canalJogo)
-      bola.velocidade.X = 2 * Jogo.cosseno()
-      bola.velocidade.Y = 2 * Jogo.seno()
+      bola.velocidade.X = 2 * ObjetosPong.defineAngulo()
+      bola.velocidade.Y = 2 * ObjetosPong.defineAngulo()
     elseif bola.posicao.Y > jogador2.Y + jogador2.altura/2 then
       bola.posicao.X = ConstanteLove.comprimentoJanela/2
       bola.posicao.Y = ConstanteLove.larguraJanela/2
-      jogador1.X = PongObjects.posicaoHorizontal
-      jogador2.X = PongObjects.posicaoHorizontal
-      jogo.paraJogo = true
+      jogador1.X = ObjetosPong.posicaoHorizontal
+      jogador2.X = ObjetosPong.posicaoHorizontal
       jogador1.placar = jogador1.placar + 1
       MqttServer.sendMessage(ConstanteLove.comandoPontoJogador1, ConstanteLove.canalJogo)
-      bola.velocidade.X = 2 * Jogo.cosseno()
-      bola.velocidade.Y = 2 * Jogo.seno()
+      bola.velocidade.X = 2 * ObjetosPong.defineAngulo()
+      bola.velocidade.Y = 2 * ObjetosPong.defineAngulo()
     end
 end
 
@@ -89,16 +87,15 @@ local function movimentaJogador(jogador, jogo, velocidade)
   elseif jogador.comando == ConstanteLove.comandoMoverEsquerda then
     realizaMovimento(jogo, jogador, -300, velocidade)
   end
+  jogo.iniciarPartida = true
 end
 
 local function movimentaP1(jogador, jogo, velocidade)
-  jogo.paraJogo = false
   movimentaJogador(jogador, jogo, velocidade)
   validaColisaoJogador(jogador, ConstanteLove.comprimentoJanela)
 end
 
 local function movimentaP2(jogador, jogo, velocidade)
-  jogo.paraJogo = false
   movimentaJogador(jogador, jogo, velocidade)
   validaColisaoJogador(jogador, ConstanteLove.comprimentoJanela)
 end
@@ -109,6 +106,7 @@ end
 
 local function ObjetosDesenhaveis()
   love.graphics.setFont(Jogo.fonte)
+
   if Jogo.mostrarMensagemInicial then
     love.graphics.print(string.format("O primeiro a marcar %d pontos vence!", ConstanteLove.pontuacaoFinalJogo), 65, 200)
   end
@@ -126,11 +124,9 @@ local function ObjetosDesenhaveis()
   if Jogador1.placar == ConstanteLove.pontuacaoFinalJogo  then
     love.graphics.print("P1 Venceu!", ConstanteLove.comprimentoJanela - 500, ConstanteLove.larguraJanela - 450)
     love.graphics.print("Pressione Enter para jogar novamente!", ConstanteLove.comprimentoJanela - 765, ConstanteLove.larguraJanela - 400)
-    Jogo.finalPartida = true
   elseif Jogador2.placar == ConstanteLove.pontuacaoFinalJogo then
     love.graphics.print("P2 Venceu!", ConstanteLove.comprimentoJanela - 500, ConstanteLove.larguraJanela - 450)
     love.graphics.print("Pressione Enter para jogar novamente!", ConstanteLove.comprimentoJanela - 765, ConstanteLove.larguraJanela - 400)
-    Jogo.finalPartida = true
   end
 end
 
@@ -150,12 +146,15 @@ function love.update(dt)
   movimentaP1(Jogador1, Jogo, dt)
   movimentaP2(Jogador2, Jogo, dt)
 
-  if Jogo.finalPartida then
+  if Jogo.reiniciarPartida then
     reiniciarJogo()
+    Jogo.reiniciarPartida = false
+    Jogo.finalizarPartida = false
   end
 
-  if Jogo.paraJogo == false and Jogo.finalPartida == false then
+  if Jogo.iniciarPartida then
     movimentaBola(dt, Jogo, Bola, Jogador1, Jogador2)
+    Jogo.iniciarPartida = false
   end
 
   MqttServer.checkMessages()
@@ -168,26 +167,16 @@ end
 function love.keypressed(key)
     if key == 'left' then
       Jogador1.comando = ConstanteLove.comandoMoverEsquerda
-      Jogo.iniciarPartida = true
     elseif key == 'right' then
-      Jogo.iniciarPartida = true
       Jogador1.comando = ConstanteLove.comandoMoverDireita
     elseif key == 'return' then
-      Jogo.finalPartida = true
-    elseif key == 'space' then
-      if Jogo.paraJogo then
-        Jogo.paraJogo = false
-      else
-        Jogo.paraJogo = true
-      end
+      Jogo.reiniciarPartida = true
+      Jogo.finalizarPartida = true
     end
 end
 
 function love.keyreleased(key)
   if key == 'left' or key == 'right' then
     Jogador1.comando = ConstanteLove.comandoParar
-  end
-  if key == 'return' then
-    Jogo.reiniciarJogo = false
   end
 end
