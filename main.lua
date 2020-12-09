@@ -1,4 +1,5 @@
 local ConstanteLove = require 'ConstanteLove'
+local Decoder = require 'Decodificador'
 local MqttServer = require 'mqttLoveLibrary'
 local comprimentoJanela, larguraJanela = love.graphics.getDimensions()
 math.randomseed(os.time())
@@ -53,7 +54,8 @@ local Player2 = {
   y = larguraJanela - 20,
   largura = ConstanteLove.comprimentoJogador,
   altura = ConstanteLove.alturaJogador,
-  placar = 0
+  placar = 0,
+  comando = nil
 }
 
 local function construirJanela()
@@ -125,28 +127,34 @@ local function movimentaP1(dt)
       jogo.encerraPartida = false
       jogo.mostrarMensagemInicial = false
     end
+
     if Player1.x + Player1.largura > comprimentoJanela then
-      Player1.x = Player1.x-5
+      Player1.x = Player1.x - 5
     elseif 0 > Player1.x then
-      Player1.x = Player1.x+5
+      Player1.x = Player1.x + 5
     end
 end
 
-local function movimentaPlayer(velocidadeMovimento, comandoRecebido)
-  if comandoRecebido == ConstanteLove.comandoMoverDireita then
-      Player2.x = Player2.x + 300 * velocidadeMovimento
-      jogo.encerraPartida=false
-      jogo.mostrarMensagemInicial = false
-  elseif comandoRecebido == ConstanteLove.comandoMoverEsquerda then
-      Player2.x = Player2.x - 300 * velocidadeMovimento
+local function movimentaP2(dt)
+  if Player2.comando == ConstanteLove.comandoMoverDireita then
+      Player2.x = Player2.x + 300 * dt
       jogo.encerraPartida = false
       jogo.mostrarMensagemInicial = false
-  end
-  if Player2.x+Player2.largura > comprimentoJanela then
-    Player2.x=Player2.x-5
-  elseif 0>Player2.x then
-    Player2.x = Player2.x+5
-  end
+    elseif Player2.comando == ConstanteLove.comandoMoverEsquerda then
+      Player2.x = Player2.x - 300 * dt
+      jogo.encerraPartida = false
+      jogo.mostrarMensagemInicial = false
+    end
+
+    if Player2.x + Player2.largura > comprimentoJanela then
+      Player2.x = Player2.x - 5
+    elseif 0 > Player2.x then
+      Player2.x = Player2.x + 5
+    end
+end
+
+local function movimentaPlayer(comandoRecebido)
+  Player2.comando = comandoRecebido
 end
 
 local function ObjetosDesenhaveis()
@@ -190,6 +198,7 @@ end
 
 function love.update(dt)
   movimentaP1(dt)
+  movimentaP2(dt)
   restart()
   if jogo.encerraPartida == false and jogo.partidaTerminada == false then
     movimentaBola(dt, bola)
