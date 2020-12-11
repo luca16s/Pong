@@ -21,8 +21,8 @@ ConstanteLove.imagemPlataforma2 = 'plataformaP2.jpg'
 ConstanteLove.pontuacaoFinalJogo = 2
 ConstanteLove.comprimentoJogador = 120
 ConstanteLove.comandoMoverDireita = 'RIGHT'
-ConstanteLove.comandoPontoJogador1 = 'GREEN'
 ConstanteLove.comandoPontoJogador2 = 'RED'
 ConstanteLove.comandoMoverEsquerda = 'LEFT'
+ConstanteLove.comandoPontoJogador1 = 'GREEN'
 ConstanteLove.comandoReiniciarJogo = 'RESET'
 return ConstanteLove
