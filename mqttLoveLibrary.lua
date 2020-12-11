@@ -1,6 +1,6 @@
 local mqtt = require('mqtt')
 
-local PORT = 1883
+local port = 1883
 local mqttClient
 local defaultTopic
 
@@ -17,11 +17,11 @@ function MqttLoveLibrary.start(host, id, listchannel, callbackFunction)
   local callback = callbackFunction
   defaultTopic = string.format('%s node', id)
   listchannel = listchannel or string.format('%slove', id)
-  mqttClient = mqtt.client.create(host, PORT, function(topic , message)
+  mqttClient = mqtt.client.create(host, port, function(topic , message)
 		print(string.format('received message %s from topic %s', message, topic))
 		callback(message)
 	end)
-  local connectErrorMessage = mqttClient:connect(id..'love')
+  local connectErrorMessage = mqttClient:connect(string.format('%slove', id))
   if(connectErrorMessage) then
     print(string.format('Error connecting! %s', connectErrorMessage))
   end
@@ -37,7 +37,7 @@ end
 function MqttLoveLibrary.sendMessage(message, topic)
   topic = topic or defaultTopic
   mqttClient:publish(topic, message)
-  print(string.format('Sending message &s to topic &s', message, topic))
+  print(string.format('Sending message %s to topic %s', message, topic))
 end
 
 --[[
@@ -46,7 +46,7 @@ end
 function MqttLoveLibrary.checkMessages()
 	local errorMessage = mqttClient:handler()
 	if(errorMessage) then
-		print(string.format('Error checking for messages! &s', errorMessage))
+		print(string.format('Error checking for messages! %s', errorMessage))
 	end
 end
 
