@@ -15,6 +15,13 @@ local function construirJanela()
   love.window.setMode(ConstanteLove.comprimentoJanela, ConstanteLove.larguraJanela)
 end
 
+local function reiniciarJogo()
+  Jogo = PongUtilities.CopiarTabela(ObjetosPong.Jogo)
+  Bola = PongUtilities.CopiarTabela(ObjetosPong.Bola)
+  Jogador1 = PongUtilities.CopiarTabela(ObjetosPong.Player1)
+  Jogador2 = PongUtilities.CopiarTabela(ObjetosPong.Player2)
+end
+
 local function movimentaBola(velocidade, jogo, bola, jogador1, jogador2)
     bola.posicao.X = bola.posicao.X + bola.velocidade.X * velocidade
     bola.posicao.Y = bola.posicao.Y + bola.velocidade.Y * velocidade
@@ -152,13 +159,6 @@ end
 
 local function movimentaPlayerNode(comandoRecebido)
   Jogador2.comando = comandoRecebido
-end
-
-local function reiniciarJogo()
-  Jogo = PongUtilities.CopiarTabela(ObjetosPong.Jogo)
-  Bola = PongUtilities.CopiarTabela(ObjetosPong.Bola)
-  Jogador1 = PongUtilities.CopiarTabela(ObjetosPong.Player1)
-  Jogador2 = PongUtilities.CopiarTabela(ObjetosPong.Player2)
 end
 
 function love.load()
