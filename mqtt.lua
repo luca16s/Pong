@@ -68,9 +68,9 @@
 -- - Consider using Copas http://keplerproject.github.com/copas/manual.html
 -- ------------------------------------------------------------------------- --
 
-function isPsp() return(Socket ~= nil) end
+function IsPsp() return(Socket ~= nil) end
 
-if (not isPsp()) then
+if (not IsPsp()) then
   socket = require("socket")
   require("io")
   require("ltn12")

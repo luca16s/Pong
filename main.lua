@@ -1,11 +1,7 @@
-local ConstanteLove = require 'ConstanteLove'
 local ObjetosPong = require 'PongObjects'
 local MqttServer = require 'mqttLoveLibrary'
+local ConstanteLove = require 'ConstanteLove'
 local PongUtilities = require 'PongUtilities'
-local cenario=love.graphics.newImage("fundo.jpg")
-local estrela=love.graphics.newImage("bola.png")
-local plataformaP1=love.graphics.newImage("plataformaP1.jpg")
-local plataformaP2=love.graphics.newImage("plataformaP2.jpg")
 
 local Jogo = PongUtilities.CopiarTabela(ObjetosPong.Jogo)
 local Bola = PongUtilities.CopiarTabela(ObjetosPong.Bola)
@@ -13,10 +9,10 @@ local Jogador1 = PongUtilities.CopiarTabela(ObjetosPong.Player1)
 local Jogador2 = PongUtilities.CopiarTabela(ObjetosPong.Player2)
 
 local function construirJanela()
+  love.window.setFullscreen(false)
+  love.window.setTitle(ConstanteLove.TituloJogo)
+  love.window.setIcon(love.image.newImageData(ConstanteLove.IconeJogo))
   love.window.setMode(ConstanteLove.comprimentoJanela, ConstanteLove.larguraJanela)
-    love.window.setFullscreen(false)
-    love.window.setTitle(ConstanteLove.TituloJogo)
-    love.window.setIcon(love.image.newImageData(ConstanteLove.IconeJogo))
 end
 
 local function movimentaBola(velocidade, jogo, bola, jogador1, jogador2)
@@ -151,15 +147,6 @@ local function movimentaJogador(jogador, jogo, velocidade)
       realizaMovimento(jogo, jogador, -300, velocidade)
     end
   end
-end
-
-local function movimentaP1(jogador, jogo, velocidade)
-  movimentaJogador(jogador, jogo, velocidade)
-  validaColisaoJogador(jogador, ConstanteLove.comprimentoJanela)
-end
-
-local function movimentaP2(jogador, jogo, velocidade)
-  movimentaJogador(jogador, jogo, velocidade)
   validaColisaoJogador(jogador, ConstanteLove.comprimentoJanela)
 end
 
@@ -176,13 +163,13 @@ end
 
 function love.load()
   construirJanela()
-  MqttServer.start(ConstanteLove.hostServer, 'paulo', ConstanteLove.canalJogo,  movimentaPlayerNode)
+  MqttServer.start(ConstanteLove.hostServer, 'luca16s', ConstanteLove.canalJogo,  movimentaPlayerNode)
 end
 
 function love.update(dt)
   if Jogo.pausarPartida == false then
-    movimentaP1(Jogador1, Jogo, dt)
-    movimentaP2(Jogador2, Jogo, dt)
+    movimentaJogador(Jogador1, Jogo, dt)
+    movimentaJogador(Jogador2, Jogo, dt)
 
     if Jogo.reiniciarPartida then
       reiniciarJogo()
@@ -197,21 +184,18 @@ function love.update(dt)
 end
 
 function love.draw()
-  love.graphics.draw(cenario,0,0)
+  love.graphics.draw(Jogo.imagem, 0, 0)
   love.graphics.setFont(Jogo.fonte)
 
   if Jogo.mostrarMensagemInicial then
     love.graphics.print(string.format("O primeiro a marcar %d pontos vence!", ConstanteLove.pontuacaoFinalJogo), 65, 200)
   end
-  love.graphics.draw(estrela, Bola.posicao.X-6.5, Bola.posicao.Y-7,0,0.03)
+  love.graphics.draw(Bola.imagem, Bola.posicao.X - 6.5, Bola.posicao.Y - 7, 0, 0.03)
   love.graphics.setColor(1, 0, 0)
-  --love.graphics.circle("fill", Bola.posicao.X, Bola.posicao.Y, Bola.raio)
   love.graphics.setColor(1, 0, 0)
   love.graphics.setColor(1, 1, 1)
-  love.graphics.draw(plataformaP1,Jogador1.X-10, Jogador1.Y-16, 0, 0.31,0.2)
-  love.graphics.draw(plataformaP2,Jogador2.X-10, Jogador2.Y-10, 0, 0.31,0.2)
-  --love.graphics.rectangle("fill", Jogador1.X, Jogador1.Y, Jogador1.largura, Jogador1.altura + 5)
-  --love.graphics.rectangle("fill", Jogador2.X, Jogador2.Y, Jogador2.largura, Jogador2.altura + 5)
+  love.graphics.draw(Jogador1.imagem, Jogador1.X - 10, Jogador1.Y - 16, 0, 0.31, 0.2)
+  love.graphics.draw(Jogador2.imagem, Jogador2.X - 10, Jogador2.Y - 10, 0, 0.31, 0.2)
 
   love.graphics.print(string.format("P1 : %d", Jogador1.placar), 50, -10 + ConstanteLove.larguraJanela/2)
   love.graphics.print(string.format("P2 : %d", Jogador2.placar), ConstanteLove.comprimentoJanela - 150, -10 + ConstanteLove.larguraJanela/2)

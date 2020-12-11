@@ -7,9 +7,10 @@ local ledJogador2 = 3
 local botaoDireito = 1
 local botaoEsquerdo = 2
 
+local comandoParar = 'STOP'
 local canalJogo = 'PONG_LUA_GAME'
 local hostServer = '192.168.1.2'
-local comandoParar = 'STOP'
+local comandoApagarLed = 'OFF'
 local comandoMoverDireita = 'RIGHT'
 local comandoPontoJogador2 = 'RED'
 local comandoMoverEsquerda = 'LEFT'
@@ -58,6 +59,10 @@ local function comandoRecebido(comando)
     end
     mensagemVelocidadeBola(string.format(comandoVelocidadeBola, adc.read(sensor)), canalJogo)
   end
+  if comando == comandoApagarLed then
+    gpio.write(ledJogador1, gpio.LOW)
+    gpio.write(ledJogador2, gpio.LOW)
+  end
 end
 
 gpio.mode(botaoDireito, gpio.INPUT, gpio.PULLUP)
@@ -65,4 +70,4 @@ gpio.mode(botaoEsquerdo, gpio.INPUT, gpio.PULLUP)
 gpio.trig(botaoDireito, 'both', mandaMensagemDireita)
 gpio.trig(botaoEsquerdo, 'both', mandaMensagemEsquerda)
 
-mqtt.start(hostServer, 'Paulo', canalJogo, comandoRecebido)
+mqtt.start(hostServer, 'luca16s', canalJogo, comandoRecebido)

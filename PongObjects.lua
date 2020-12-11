@@ -16,6 +16,7 @@ end
 
 PongObjects.Jogo = {
     fonte = love.graphics.newFont(ConstanteLove.nomeFonte, ConstanteLove.tamanhoFonte),
+    imagem = love.graphics.newImage(ConstanteLove.imagemFundo),
     mostrarMensagemInicial = true,
     iniciarPartida = false,
     pausarPartida = false,
@@ -24,7 +25,7 @@ PongObjects.Jogo = {
 }
 
 PongObjects.Bola = {
-      --imagem = love.graphics.newImage(ConstanteLove.imagemBola),
+      imagem = love.graphics.newImage(ConstanteLove.imagemBola),
       raio = ConstanteLove.raioBola,
       posicao = {
           X = (ConstanteLove.comprimentoJanela / 2) - (ConstanteLove.raioBola / 2),
@@ -38,7 +39,7 @@ PongObjects.Bola = {
 }
 
 PongObjects.Player1 = {
-    --imagem = love.graphics.newImage(ConstanteLove.imagemJogador),
+    imagem = love.graphics.newImage(ConstanteLove.imagemPlataforma1),
     X = PongObjects.posicaoHorizontal,
     Y = 10,
     largura = ConstanteLove.comprimentoJogador,
@@ -48,7 +49,7 @@ PongObjects.Player1 = {
 }
 
 PongObjects.Player2 = {
-    --imagem = love.graphics.newImage(ConstanteLove.imagemJogador),
+    imagem = love.graphics.newImage(ConstanteLove.imagemPlataforma2),
     X = PongObjects.posicaoHorizontal,
     Y = ConstanteLove.larguraJanela - 20,
     largura = ConstanteLove.comprimentoJogador,

@@ -1,18 +1,17 @@
 PongUtilities = {}
 
-function PongUtilities.CopiarTabela(orig)
-  local orig_type = type(orig)
-  local copy
-  if orig_type == 'table' then
-      copy = {}
-      for orig_key, orig_value in next, orig, nil do
-          copy[PongUtilities.CopiarTabela(orig_key)] = PongUtilities.CopiarTabela(orig_value)
+function PongUtilities.CopiarTabela(tabelaOriginal)
+  local tabelaEspelho
+  if type(tabelaOriginal) == 'table' then
+      tabelaEspelho = {}
+      for chaveOriginal, valorOriginal in next, tabelaOriginal, nil do
+          tabelaEspelho[PongUtilities.CopiarTabela(chaveOriginal)] = PongUtilities.CopiarTabela(valorOriginal)
       end
-      setmetatable(copy, PongUtilities.CopiarTabela(getmetatable(orig)))
+      setmetatable(tabelaEspelho, PongUtilities.CopiarTabela(getmetatable(tabelaOriginal)))
   else
-      copy = orig
+      tabelaEspelho = tabelaOriginal
   end
-  return copy
+  return tabelaEspelho
 end
 
 return PongUtilities
