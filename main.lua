@@ -1,6 +1,6 @@
+local MqttServer = require './Libs/mqttLoveLibrary'
 local ObjetosPong = require 'PongObjects'
-local MqttServer = require 'mqttLoveLibrary'
-local ConstanteLove = require 'ConstanteLove'
+local ConstanteLove = require 'PongConstanteLove'
 local PongUtilities = require 'PongUtilities'
 
 local Jogo = PongUtilities.CopiarTabela(ObjetosPong.Jogo)

@@ -1,4 +1,4 @@
-local ConstanteLove = require 'ConstanteLove'
+local ConstanteLove = require 'PongConstanteLove'
 PongObjects = {}
 
 PongObjects.posicaoHorizontal = (ConstanteLove.comprimentoJanela / 2) - (ConstanteLove.comprimentoJogador / 2)
